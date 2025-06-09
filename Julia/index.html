@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Amor</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js" type="text/javascript"></script>
+
+    <style>
+        body {
+            background-color: #1F1F1F;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .spotify-player {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .carousel-container {
+            width: 720px;
+            height: 1280px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-inner img {
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-item {
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .texto-dia-namorados {
+            margin-top: 40px;
+            font-size: 3rem;
+            color: white;
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        .contador {
+            margin-top: 10px;
+            font-size: 2rem;
+            color: white;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .chuva-coracoes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .coracao {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            transform: rotate(45deg);
+            animation: cair 5s linear infinite;
+            opacity: 0.8;
+        }
+
+        .coracao::before,
+        .coracao::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            border-radius: 50%;
+        }
+
+        .coracao::before {
+            top: -10px;
+            left: 0;
+        }
+
+        .coracao::after {
+            left: -10px;
+            top: 0;
+        }
+
+        @keyframes cair {
+            0% {
+                transform: translateY(0) rotate(45deg);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(45deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Player do Spotify -->
+    <div class="spotify-player">
+        <iframe style="border-radius:12px"
+            src="https://open.spotify.com/embed/track/6ft9PAgNOjmZ2kFVP7LGqb?utm_source=generator" width="820"
+            height="300" frameborder="0" allowtransparency="true"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <div class="carousel-container">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="5000">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="d-block w-100" src="img/img1.jpg" alt="Primeiro Slide">
+                </div>
+                <div class="carousel-item">
+                    <img class="d-block w-100" src="img/img2.jpg" alt="Segundo Slide">
+                </div>
+                <div class="carousel-item">
+                    <img class="d-block w-100" src="img/img3.jpg" alt="Terceiro Slide">
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Anterior</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Próximo</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="texto-dia-namorados">
+        Feliz dia dos namorados!
+    </div>
+    <div class="contador" id="contador"></div>
+
+    <div class="chuva-coracoes"></div>
+
+    <script>
+        $(document).ready(function () {
+            $("#carouselExampleIndicators").on("touchstart", function (event) {
+                var xStart = event.originalEvent.touches[0].clientX;
+
+                $(this).on("touchmove", function (event) {
+                    var xMove = event.originalEvent.touches[0].clientX;
+                    var xDiff = xStart - xMove;
+
+                    if (Math.abs(xDiff) > 5) {
+                        if (xDiff > 0) {
+                            $(this).carousel('next');
+                        } else {
+                            $(this).carousel('prev');
+                        }
+                    }
+                });
+
+                $(this).on("touchend", function () {
+                    $(this).off("touchmove touchend");
+                });
+            });
+
+            // Contador desde 04/07/2022
+            function atualizarContador() {
+                const inicio = new Date('2022-07-04T00:00:00');
+                const agora = new Date();
+
+                let anos = agora.getFullYear() - inicio.getFullYear();
+                const aniversarioEsteAno = new Date(agora.getFullYear(), 6, 4);
+                if (agora < aniversarioEsteAno) anos--;
+
+                const dataBase = new Date(inicio);
+                dataBase.setFullYear(inicio.getFullYear() + anos);
+
+                const diffMs = agora - dataBase;
+                const dias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+                const minutos = Math.floor((diffMs / (1000 * 60)) % 60);
+                const segundos = Math.floor((diffMs / 1000) % 60);
+
+                document.getElementById('contador').innerText =
+                    `Já se passaram ${anos} ano(s), ${dias} dia(s), ${horas} hora(s), ${minutos} minuto(s) e ${segundos} segundo(s) desde 04/07/2022 💖`;
+            }
+
+            atualizarContador();
+            setInterval(atualizarContador, 1000);
+
+            // Criar chuva de corações
+            function criarCoracao() {
+                const coracao = document.createElement('div');
+                coracao.classList.add('coracao');
+
+                coracao.style.left = Math.random() * window.innerWidth + 'px';
+                coracao.style.animationDuration = (Math.random() * 3 + 3) + 's';
+
+                document.querySelector('.chuva-coracoes').appendChild(coracao);
+
+                setTimeout(() => {
+                    coracao.remove();
+                }, 5000);
+            }
+
+            setInterval(criarCoracao, 200);
+
+        });
+    </script>
+</body>
+
+</html>
